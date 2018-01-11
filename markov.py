@@ -56,17 +56,46 @@ def make_text(chains):
         # it would run for a very long time.
 
         word = choice(chains[key])
+
+        charecter_count += len(word) + 1
         
-        if charecter_count + len(word) + 1 >= 280:
+        if charecter_count >= 140:
             break
 
 
         words.append(word)
         key = (key[1], word)
 
-    return " ".join(words)
+    text = " ".join(words)
+    print len(text)
+    return text
+
+# def tweet(chains):
+#     """Create a tweet and send it to the Internet."""
+
+#     # Use Python os.environ to get at environmental variables
+#     # Note: you must run `source secrets.sh` before running this file
+#     # to make sure these environmental variables are set.
 
 
+#     api = twitter.Api(
+#         consumer_key=os.environ['TWITTER_CONSUMER_KEY'],
+#         consumer_secret=os.environ['TWITTER_CONSUMER_SECRET'],
+#         access_token_key=os.environ['TWITTER_ACCESS_TOKEN_KEY'],
+#         access_token_secret=os.environ['TWITTER_ACCESS_TOKEN_SECRET'])
+
+#     # this will print info about credentials to make sure that they are correct
+#     # print api.VerifyCredentials()
+
+#     # sends a tweet
+
+#     status = api.PostUpdate(make_text(chains))
+
+#     # prints to terminal the tweet you have sent
+#     # print status.text
+
+
+## this version of tweet(chains) adds a loop asking user if they want to tweet again
 def tweet(chains):
     """Create a tweet and send it to the Internet."""
 
@@ -91,6 +120,13 @@ def tweet(chains):
     # prints to terminal the tweet you have sent
     print status.text
 
+    #### FIX WHILE LOOP
+    while True:
+        retweet = raw_input("Enter to tweet again [q to quit] ")
+        retweet = retweet.lower()
+        tweet(chains)
+        if retweet == "q":
+            break
 
 
 # Get the filenames from the user through a command line prompt, ex:
@@ -108,3 +144,10 @@ chains = make_chains(text)
 # tweet(chains)
 
 tweet(chains)
+
+# while True:
+#     retweet = raw_input("Enter to tweet again [q to quit] ")
+#     retweet = retweet.lower()
+#     tweet(chains)
+#     if retweet == "q":
+#         break
