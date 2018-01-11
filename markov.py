@@ -44,8 +44,10 @@ def make_chains(text_string):
 def make_text(chains):
     """Take dictionary of Markov chains; return random text."""
 
+    charecter_count = 0
     key = choice(chains.keys())
     words = [key[0], key[1]]
+    charecter_count += len(key[0]) + len(key[1]) + 1
     while key in chains:
         # Keep looping until we have a key that isn't in the chains
         # (which would mean it was the end of our original text).
@@ -54,6 +56,11 @@ def make_text(chains):
         # it would run for a very long time.
 
         word = choice(chains[key])
+        
+        if charecter_count + len(word) + 1 >= 280:
+            break
+
+
         words.append(word)
         key = (key[1], word)
 
@@ -67,7 +74,23 @@ def tweet(chains):
     # Note: you must run `source secrets.sh` before running this file
     # to make sure these environmental variables are set.
 
-    pass
+
+    api = twitter.Api(
+        consumer_key=os.environ['TWITTER_CONSUMER_KEY'],
+        consumer_secret=os.environ['TWITTER_CONSUMER_SECRET'],
+        access_token_key=os.environ['TWITTER_ACCESS_TOKEN_KEY'],
+        access_token_secret=os.environ['TWITTER_ACCESS_TOKEN_SECRET'])
+
+    # this will print info about credentials to make sure that they are correct
+    print api.VerifyCredentials()
+
+    # sends a tweet
+
+    status = api.PostUpdate(make_text(chains))
+
+    # prints to terminal the tweet you have sent
+    print status.text
+
 
 
 # Get the filenames from the user through a command line prompt, ex:
@@ -80,5 +103,8 @@ text = open_and_read_file(filenames)
 # Get a Markov chain
 chains = make_chains(text)
 
+
 # Your task is to write a new function tweet, that will take chains as input
 # tweet(chains)
+
+tweet(chains)
